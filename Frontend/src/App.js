@@ -10,6 +10,7 @@ function App() {
     </div> */
     <Routes>
       <Route path = "/" element = {<Passkey />} />
+	  /* this looks like a hacked way of invoking authentication */
       <Route path = "/tictactoe" element = {<Board />} />
     </Routes>
   );
