@@ -4,6 +4,7 @@ const cors = require('cors');
 const crypto = require('crypto');
 const mysql = require('mysql2');
 const base64url = require('base64url');
+const jwt = require('jsonwebtoken');
 const { verifyRegistrationResponse, verifyAuthenticationResponse } = require('@simplewebauthn/server');
 
 
@@ -358,10 +359,18 @@ app.post('/webauthn/authenticate/complete', (req, res) => {
                 
                 console.log('User data updated with new counter:', newCounter);
                 
-                // Send success response
+                // Generate a JWT token for session persistence
+                const token = jwt.sign(
+                    { email: email, userId: results[0].user_id },
+                    'your-secret-key-change-this',
+                    { expiresIn: '7d' }
+                );
+                
+                // Send success response with token
                 res.json({ 
                     success: true,
-                    message: 'Authentication successful'
+                    message: 'Authentication successful',
+                    token: token
                 });
             });
         } catch (error) {
@@ -376,6 +385,26 @@ app.post('/webauthn/authenticate/complete', (req, res) => {
 
 app.listen(5200, () => {
     console.log('Server running on port 5200...');
+});
+
+// Verify token endpoint for session persistence
+app.post('/webauthn/verify-token', (req, res) => {
+    const { token } = req.body;
+    
+    if (!token) {
+        return res.status(400).json({ success: false, error: 'No token provided' });
+    }
+    
+    try {
+        const decoded = jwt.verify(token, 'your-secret-key-change-this');
+        return res.json({ 
+            success: true, 
+            email: decoded.email,
+            userId: decoded.userId
+        });
+    } catch (error) {
+        return res.status(401).json({ success: false, error: 'Invalid or expired token' });
+    }
 });
 
 app.get('/test', (req, res) => {

@@ -2,7 +2,7 @@ import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
-function Passkey( { setIsAuthenticated } ) { //accepting setIsAuthenticated as prop
+function Passkey( { setIsAuthenticated, setUserEmail } ) { //accepting setIsAuthenticated and setUserEmail as props
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [isLoginView, setIsLoginView] = useState(true);
@@ -119,6 +119,16 @@ function Passkey( { setIsAuthenticated } ) { //accepting setIsAuthenticated as p
       });
 
       if (response.data.success) {
+        // Store the token in localStorage for session persistence
+        if (response.data.token) {
+          console.log('Storing token in localStorage:', response.data.token);
+          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('userEmail', email);
+          console.log('Token and email stored successfully');
+        } else {
+          console.log('No token received from backend');
+        }
+        setUserEmail(email);
         setIsAuthenticated(true); //update authentication state
         navigate('/tictactoe', { state: { username: email } }); // Redirect to Tic Tac Toe on success
       } else {

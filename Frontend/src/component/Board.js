@@ -3,7 +3,7 @@ import Square from './Square.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Board.css';
 
-export default function Board() {
+export default function Board({ username, onLogout }) {
   // Array is created to track square has which value with X or O
   const [square, setSquare] = useState(Array(9).fill(null));
   // This state will keep track whose turn is next
@@ -11,8 +11,8 @@ export default function Board() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // For demo purposes - replace with actual username from login/authentication
-  const username = location.state?.username || "Player";
+  // Use the username prop if provided, otherwise fall back to location state or default
+  const displayUsername = username || location.state?.username || "Player";
   
   // State to control welcome message visibility
   const [showWelcome, setShowWelcome] = useState(true);
@@ -32,6 +32,7 @@ export default function Board() {
   }
 
   function handleLogout() {
+    localStorage.removeItem('authToken');
     navigate('/'); // Redirect to login page
   }
 
@@ -67,7 +68,7 @@ export default function Board() {
       {/* Welcome Message */}
       {showWelcome && (
         <div className="welcome-message">
-          <h2>Welcome, {username}!</h2>
+          <h2>Welcome, {displayUsername}!</h2>
           <p>Get ready to play!</p>
         </div>
       )}
@@ -75,7 +76,7 @@ export default function Board() {
       {/* Navigation Bar */}
       <div className="nav-bar">
         <div className="player-info">
-          <span className="username">{username}</span>
+          <span className="username">{displayUsername}</span>
         </div>
         <div className="game-status">{status}</div>
         <div className="nav-controls">

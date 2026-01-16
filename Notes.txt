@@ -38,4 +38,7 @@ My next goal is to implement a session token or JWT system to preserve login inf
 
 
     New command for building/deployment:
-npm run deploy
+//this script builds frontend and copies build files into backend automatically:
+npm run deploy 
+//Then just start the backend:
+npm run start-backend
