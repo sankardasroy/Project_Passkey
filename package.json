@@ -1,16 +1,12 @@
 {
   "name": "project-passkey",
   "version": "1.0.0",
-  "description": "Webauthn Passkey authentication for Tic Tac Toe game",
+  "description": "WebAuthn Passkey authentication for Tic Tac Toe game",
   "main": "Backend/Server.js",
   "scripts": {
-    "start": "node Backend/Server.js",
-    "build": "cd Frontend && npm install && npm run build && cd ..",
-    "heroku-postbuild": "npm run build"
-  },
-  "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "start": "cd Backend && npm start",
+    "start-backend": "cd Backend && npm start",
+    "deploy": "node build-and-deploy.js"
   },
   "keywords": ["webauthn", "passkey", "authentication"],
   "author": "",

@@ -163,4 +163,16 @@ Will experiment with that tomorrow.
     1/28
 -I have signed up for the Heroku student development pack, and should receive $13 of web app hosting credit within 24 hours
 -I have also worked on the paper briefly, adding diagrams
--worked to switch
+-worked to upload to heroku. Took some changes, mostly installing Heroku locally and connecting it, then updating configs and environment variables
+-also updated code to use URLs from .env instead of hard-coded localhost. Using jawsDB instead of mySQL https://elements.heroku.com/addons/jawsdb 
+-ran into a strange issue where the build was crashing. Switched to building Frontend before upload instead of after. 
+Still wasn't working, will look into it more tomorrow.
+Note that current issue uses hard-coded JWT keys, in real world a CA gives the cert. Will switch to this after URL is finalized.
+
+	1/29
+Continued messing with Heroku, turns out some environment variables weren't et correctly and some node packages were outdated, and one was named incorrectly. After a bunch of testing and minor bug fixes, I got it set up. Then I had to connect an SQL database, and I chose JawsDB, and used HeidiSQL to initialize the users table. JawsDB gave me all of the login info, then I just put it into Heidi and ran a simple query to make a table, which I reused from earlier MySQL setup. 
+Also added rate limiting using the express-rate-limit library and database encryption, which was supported natively by JawsDB (Database SSL). Also input validation using the "joi" library. With these, the app is very secure
+It is also worth noting that HTTPS encryption is handled by Heroku automatically. The JWT keys are kept as environment variables securely on Heroku. 
+Our JWT system is static, in the real world they are rotated automatically every month or week, and legacy keys are allowed for a short period of time. Many enterprise companies use vault services for these keys, but most web apps don't need anything like this because the keys are already very strong (RSA-based) and stored securely. No keys are kept in the code or on git. Ideally not even the developer would know them, and they would be generated directly into the server's secure environment variables.
+Required many small tweaks and bug fixes to get cookies and database set up, but nothing necessarily worth reporting on.
+Worked on paper.

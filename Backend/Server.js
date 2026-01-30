@@ -25,9 +25,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-    origin: isProduction 
-        ? process.env.FRONTEND_URL || true
-        : 'https://localhost:5200',
+    origin: 'https://localhost:5200',
     credentials: true
 })); // use credentials for cookies
 app.use(bodyParser.json());
@@ -84,15 +82,8 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Expected origin for WebAuthn verification
-const expectedOrigin = process.env.EXPECTED_ORIGIN || 
-    (isProduction 
-        ? process.env.HEROKU_APP_URL || `https://${process.env.HEROKU_APP_NAME}.herokuapp.com`
-        : 'https://localhost:5200');
-
-const expectedRPID = process.env.EXPECTED_RP_ID || 
-    (isProduction 
-        ? process.env.HEROKU_APP_NAME || 'herokuapp.com'
-        : 'localhost');
+const expectedOrigin = process.env.EXPECTED_ORIGIN || 'https://localhost:5200';
+const expectedRPID = process.env.EXPECTED_RP_ID || 'localhost';
 
 // Endpoint to complete registration
 app.post('/webauthn/register', (req, res) => {
@@ -516,43 +507,32 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../Frontend/build', 'index.html'));
 });
 
-// Server startup with environment-based HTTPS handling
+// Server startup with HTTPS
 let server;
 
-if (isProduction) {
-    // Heroku handles HTTPS - use HTTP server internally
-    server = http.createServer(app);
-    server.listen(port, '0.0.0.0', () => {
-        console.log(`🚀 Production server running on port ${port}`);
-        console.log('🔒 HTTPS handled by Heroku');
+try {
+    const sslCertPath = process.env.SSL_CERT_PATH || path.join(__dirname, 'certs', 'server.crt');
+    const sslKeyPath = process.env.SSL_KEY_PATH || path.join(__dirname, 'certs', 'server.key');
+    
+    const certificate = fs.readFileSync(sslCertPath);
+    const certPrivateKey = fs.readFileSync(sslKeyPath);
+    
+    const httpsOptions = {
+        key: certPrivateKey,
+        cert: certificate
+    };
+    
+    server = https.createServer(httpsOptions, app);
+    server.listen(port, () => {
+        console.log(`🔧 HTTPS server running on https://localhost:${port}`);
         console.log(`📍 Expected origin: ${expectedOrigin}`);
     });
-} else {
-    // Local development with self-signed certificates
-    try {
-        const sslCertPath = process.env.SSL_CERT_PATH || path.join(__dirname, 'certs', 'server.crt');
-        const sslKeyPath = process.env.SSL_KEY_PATH || path.join(__dirname, 'certs', 'server.key');
-        
-        const certificate = fs.readFileSync(sslCertPath);
-        const certPrivateKey = fs.readFileSync(sslKeyPath);
-        
-        const httpsOptions = {
-            key: certPrivateKey,
-            cert: certificate
-        };
-        
-        server = https.createServer(httpsOptions, app);
-        server.listen(port, () => {
-            console.log(`🔧 Development HTTPS server running on https://localhost:${port}`);
-            console.log(`📍 Expected origin: ${expectedOrigin}`);
-        });
-    } catch (error) {
-        console.error('Error loading SSL certificates:', error.message);
-        console.error('Make sure certificate files exist at:');
-        console.error(`  Certificate: ${path.join(__dirname, 'certs', 'server.crt')}`);
-        console.error(`  Key: ${path.join(__dirname, 'certs', 'server.key')}`);
-        process.exit(1);
-    }
+} catch (error) {
+    console.error('Error loading SSL certificates:', error.message);
+    console.error('Make sure certificate files exist at:');
+    console.error(`  Certificate: ${path.join(__dirname, 'certs', 'server.crt')}`);
+    console.error(`  Key: ${path.join(__dirname, 'certs', 'server.key')}`);
+    process.exit(1);
 }
 
 module.exports = server;
