@@ -195,3 +195,9 @@ Diagrams on our web app implementation how it works
 Write somewhere that we are only focusing on CSR in this paper, and will be doing the others in future paper. Also describe high-level difference
 Explain why what I have done is applicable or not to the other. In high level, what would need done differently or extra.
 Can split up web app section into subsections if it makes sense
+
+
+    2/2/2026
+Fixed heroku app and redeployed (from a repository clone) 
+-The database connection wasn't set up to automatically reconnect after the server restarted, so it would break after a day when Heroku cycled the server. 
+-Switching to a connection pool fixed this by automatically managing and reconnecting database connections.
