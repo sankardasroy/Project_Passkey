@@ -201,3 +201,32 @@ Can split up web app section into subsections if it makes sense
 Fixed heroku app and redeployed (from a repository clone) 
 -The database connection wasn't set up to automatically reconnect after the server restarted, so it would break after a day when Heroku cycled the server. 
 -Switching to a connection pool fixed this by automatically managing and reconnecting database connections.
+
+    2/4
+-Wrote majority of implementation section. Still need to finish conclusion, references, key contributions, and splitting up/simplifying previous subsections
+-need to revise architecture diagram, and possibly add a diagram from Raj's paper into the Implementation details
+-Also need to change part about how this paper covers 2 web apps to just one.
+In conclusion, talk about how the takeaways from this implementation are/aren't applicable to other web application types, and what would need done differently
+
+
+2/7
+-Raj added as author, and the paper will write about what we both have done together. We do not need to differentiate the role of the authors, and we talk as a group
+-"we have done item x", huge shift
+-in abstract, talking about JWT is too specific. Keep it general: registration, login, session management.
+-shift references to a .bib file
+-Especially write Raj's stuff in the key contribution and implementation (shorten bullets, no more than 3)
+-Technical achievements should be generalized. Talk about adding login/registration, then added JWT and session management. Very short and high level, but very Technical
+-Conclusion should be max 2 paragraphs, ideally one.
+-the 2 pages for web applications can be directly moved to appendix.
+The plan is: we do not need to change the main flow in the introduction. The 1.5 page for web app can be moved to appenix and turned into 0.3 page. 
+In the section, summarize main ideas and keep the main figures. shorter is better.
+-Passkey section remains and will be shortened.
+-conclusion and technical achievement will be reduced, and use that space for Raj's work.
+-can copy directly from Raj's project, because he is an author as well as Roy. We are free to copy diagrams and words.
+Before session management: include registration and login.
+-work to add Raj's registration and login flow diagrams to the paper. If they take up too much space, move to appendix
+
+Monday office hours: 1pm, come at 1:20 after class. Hopefully, the whole organization is finalized, even if the text isn't ready. Use placeholders if needed.
+-if I think something is fitting better, then do it. Organize the paper in a readable way, in whatever way I choose.
+-work to make it readable, (placeholders), shift stuff to appendix, and include stuff from Raj.
+
